@@ -13,8 +13,6 @@ import matplotlib.pyplot as plt
 from unidecode import unidecode
 from datetime import date
 
-####################### PROBLEM - REGEX W DZIELNICACH NIE ROZPOZNAJE DZIELNIC Z KROPKĄ ########################
-
 def getInfo(url):
     r = requests.get(url)
     if r.status_code != 200:
