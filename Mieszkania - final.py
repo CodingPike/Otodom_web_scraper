@@ -23,7 +23,7 @@ def getInfo(url):
         soup = BeautifulSoup(r.text, 'html.parser')
     return soup
 
-df_cities = pd.read_csv('pl.csv', header = None)
+df_cities = pd.read_csv('pl.csv', header = None).  #You need to download this for the code to work properly, it can be found in the repo
 df_cities.columns = df_cities.iloc[0]
 df_cities = df_cities.drop(df_cities.index[0])
 df_cities_list = list(df_cities['city'])
@@ -265,12 +265,6 @@ def getOfferLink():
     return arr
 
 
-# In[70]:
-
-
-len(getNH()), len(getSurface()), len(getOfferLink()), len(getPrice()),len(getListingCategory()), len(getOfferOwner()), len(getRooms()), len(getTitle()), len(getPricePerSquareMeter())
-
-
 # In[71]:
 
 
@@ -280,138 +274,7 @@ else:
     df = pd.DataFrame({'Offer name':getTitle(), 'Offer owner' : getOfferOwner(), 'Listing category' : getListingCategory(), 'Surface' : getSurface(), 'Number of rooms' : getRooms(), 'Rent per month' : getPrice(), 'Neighborhood' : getNH(), 'Offer link' : getOfferLink()})
 
 
-# In[72]:
-
-
-df
-
-
-# In[68]:
-
 
 now = datetime.now()   #setting actual date and time as a variable
 dt_string = now.strftime("%d-%m-%Y %H:%M:%S")
-df.to_csv(f'{city.capitalize()} {dt_string}.csv', encoding='utf-8', index = False)   #Saving DataFrame as CSV
-
-
-# In[74]:
-
-
-if query_type.lower() in ['wynajem', 'najem']:
-    df_grouped_price = df.groupby('Neighborhood')['Price per month'].mean()   #Works only for rentals
-df_grouped_rooms = df.groupby('Neighborhood')['Number of rooms'].mean()
-df_grouped_count = df.groupby('Neighborhood')['Number of rooms'].count()
-df_grouped_surface = df.groupby('Neighborhood')['Surface'].mean()
-df_grouped_listing_count = df.groupby('Neighborhood')['Listing category'].count()
-
-
-# In[ ]:
-
-
-new_df = df[['Neighborhood', 'Listing category']].groupby(['Neighborhood', 'Listing category']).size()
-new_df_arr = []
-new_df_arr_to_drop = []
-new_df = dict(new_df)
-new_df_keys = list(new_df.keys())
-for i in new_df_keys:
-    new_df_arr.append(i[0])
-for i in new_df_arr:
-    if new_df_arr.count(i) < 2:
-        new_df_arr_to_drop.append(i)
-        
-df_improved = df[~df['Neighborhood'].isin(new_df_arr_to_drop)]
-
-
-# In[ ]:
-
-
-df.sort_values(by = 'Price per month')   #Works only for rentals
-
-
-# In[ ]:
-
-
-df_loc_private_offers = df_improved.loc[df['Listing category'] == 'Oferta prywatna']
-del df_loc_private_offers['Offer name']
-del df_loc_private_offers['Offer owner']
-del df_loc_private_offers['Surface']
-del df_loc_private_offers['Number of rooms']
-del df_loc_private_offers['Price per month']
-del df_loc_private_offers['Offer link']
-df_loc_private_offers_groupby = df_loc_private_offers.groupby('Neighborhood')['Listing category'].count()
-df_loc_brokerage_offers = df_improved.loc[df['Listing category'] == 'Biuro nieruchomości']
-del df_loc_brokerage_offers['Offer name']
-del df_loc_brokerage_offers['Offer owner']
-del df_loc_brokerage_offers['Surface']
-del df_loc_brokerage_offers['Number of rooms']
-del df_loc_brokerage_offers['Price per month']
-del df_loc_brokerage_offers['Offer link']
-df_loc_brokerage_offers.columns = ['Listing category 2', 'Neighborhood']
-df_loc_brokerage_offers_groupby = df_loc_brokerage_offers.groupby('Neighborhood')['Listing category 2'].count()
-groups_private = dict(df_loc_private_offers_groupby)
-groups_broker = dict(df_loc_brokerage_offers_groupby)
-ds = [groups_private, groups_broker]
-d = {}
-
-
-# In[ ]:
-
-
-for k in groups_private.keys():
-    d[k] = tuple(d[k] for d in ds)
-connected_arr = []
-keys = list(d.keys())
-values = list(d.values())
-for x, y in zip(keys, values):
-    connected_arr.append([x, y[0], y[1]])
-df_listing_category = pd.DataFrame(connected_arr)
-df_listing_category.columns = ['Neighborhood', 'Private', 'Broker']
-df_listing_category = df_listing_category.set_index('Neighborhood')
-df_listing_category.plot.bar(figsize = (20, 8))
-plt.grid()
-plt.savefig(f'{city.capitalize()} - Liczba różnych rodzajów ofert w zależności od dzielnicy')
-
-
-# In[ ]:
-
-
-df_grouped_price.plot.bar(figsize = (20, 8))
-plt.grid()
-plt.savefig(f'{city.capitalize()} - ceny na osiedle')
-
-
-# In[75]:
-
-
-df_grouped_count.plot.bar(figsize = (20,8))
-plt.grid()
-plt.savefig(f'{city.capitalize()} - ilość mieszkań na osiedle')
-
-
-# In[ ]:
-
-
-df_grouped_rooms.plot.bar(figsize = (20,8))
-plt.grid()
-plt.savefig(f'{city.capitalize()} - średnia ilość pokoi na osiedle')
-
-
-# In[ ]:
-
-
-df_grouped_surface.plot.bar(figsize = (20,8))
-plt.grid()
-plt.savefig(f'{city.capitalize()} - średnia wielkość mieszkania na osiedlu')
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
+df.to_csv(f'{city.capitalize()} {dt_string}.csv', encoding='utf-8', index = False)   #Saving DataFrame as CSV, adjust for your own path
